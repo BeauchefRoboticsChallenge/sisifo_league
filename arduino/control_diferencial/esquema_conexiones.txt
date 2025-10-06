@@ -1,0 +1,76 @@
+/*
+ * ESQUEMA DE CONEXIONES - Control Diferencial
+ * ==========================================
+ * 
+ * Arduino Uno/Nano
+ * ================
+ * 
+ * JOYSTICKS (Potenciómetros):
+ * ---------------------------
+ * Joystick Izquierdo:
+ *   - Pin central → A0
+ *   - Pin VCC     → 5V
+ *   - Pin GND     → GND
+ * 
+ * Joystick Derecho:
+ *   - Pin central → A1
+ *   - Pin VCC     → 5V
+ *   - Pin GND     → GND
+ * 
+ * DRIVER MOTORES (ej: L298N):
+ * ---------------------------
+ * Motor Izquierdo:
+ *   - ENA (Enable)  → Pin 5 (PWM)
+ *   - IN1           → Pin 4
+ *   - IN2           → Pin 3
+ *   - OUT1          → Motor Izq (+)
+ *   - OUT2          → Motor Izq (-)
+ * 
+ * Motor Derecho:
+ *   - ENB (Enable)  → Pin 6 (PWM)
+ *   - IN3           → Pin 7
+ *   - IN4           → Pin 8
+ *   - OUT3          → Motor Der (+)
+ *   - OUT4          → Motor Der (-)
+ * 
+ * ALIMENTACIÓN:
+ * -------------
+ * Arduino:
+ *   - VCC → 5V (USB o fuente externa)
+ *   - GND → GND común
+ * 
+ * Driver L298N:
+ *   - VCC (Logic) → 5V Arduino
+ *   - VCC (Motor) → 6-12V (fuente externa)
+ *   - GND         → GND común
+ * 
+ * NOTAS IMPORTANTES:
+ * ------------------
+ * 1. Usar fuente externa para motores (6-12V)
+ * 2. Conectar todos los GND juntos (común)
+ * 3. Los potenciómetros pueden ser lineales (10kΩ recomendado)
+ * 4. Verificar polaridad de motores para dirección correcta
+ * 5. Si el robot gira al revés, intercambiar IN1-IN2 o IN3-IN4
+ * 
+ * DIAGRAMA ASCII:
+ * ---------------
+ * 
+ *     [Joystick Izq]    [Joystick Der]
+ *           |                 |
+ *          A0                A1
+ *           |                 |
+ *    +------+------+----------+------+
+ *    |    ARDUINO UNO/NANO           |
+ *    |                               |
+ *    | Pin 3,4,5      Pin 6,7,8      |
+ *    +---+---+----------+---+--------+
+ *        |   |          |   |
+ *    +---+---+--+   +---+---+--+
+ *    |  L298N   |   |  L298N   |
+ *    | (Motor   |   | (Motor   |
+ *    |  Izq)    |   |  Der)    |
+ *    +----+-----+   +----+-----+
+ *         |              |
+ *    [Motor Izq]    [Motor Der]
+ * 
+ */
