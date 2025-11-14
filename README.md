@@ -4,7 +4,7 @@ Liga Sisifo para Beauchef Robotics Challenge 2025+
 
 ## Descripción
 
-Este repositorio contiene el código y recursos para robots de la Liga Sisifo, enfocada en robots diferenciales controlados por joysticks digitales de 3 estados.
+Este repositorio contiene el código y recursos para robots de la Liga Sisifo, enfocada en robots diferenciales controlados por joysticks digitales de 3 estados (implementados con 2 switches por joystick).
 
 ## Estructura del Proyecto
 
@@ -22,8 +22,9 @@ sisifo_league/
 ### Características
 
 - Control de robot diferencial con dos ruedas independientes
-- Control mediante joysticks digitales de 3 estados (UP, DOWN, NEUTRAL)
+- Control mediante joysticks digitales de 3 estados: UP, DOWN, y NEUTRAL (implementados con 2 switches por joystick)
 - Cada joystick controla una rueda de forma independiente
+- Estado NEUTRAL se aplica automáticamente cuando ningún switch está activado
 - Aceleración gradual al cambiar de NEUTRAL a UP/DOWN
 - Parada instantánea al volver a NEUTRAL
 - Comunicación serie para depuración
@@ -31,7 +32,7 @@ sisifo_league/
 ### Hardware Requerido
 
 - Arduino Uno/Nano o compatible
-- 2 Joysticks digitales de 3 estados (cada uno con señales UP, DOWN, NEUTRAL que se conectan a GND cuando activos)
+- 2 Joysticks digitales de 3 estados (cada uno con 2 switches: UP y DOWN que se conectan a GND cuando activos)
 - 2 Motores DC con driver (ej: L298N)
 - Fuente de alimentación adecuada para los motores
 - Cables de conexión
@@ -39,19 +40,18 @@ sisifo_league/
 ### Conexiones
 
 #### Joysticks Digitales
-**Joystick Izquierdo:**
-- Señal UP: Pin 9
-- Señal DOWN: Pin 10
-- Señal NEUTRAL: Pin 11
+**Joystick Izquierdo (2 switches):**
+- Switch UP: Pin 9
+- Switch DOWN: Pin 10
 
-**Joystick Derecho:**
-- Señal UP: Pin 12
-- Señal DOWN: Pin A2
-- Señal NEUTRAL: Pin A3
+**Joystick Derecho (2 switches):**
+- Switch UP: Pin 12
+- Switch DOWN: Pin A2
 
 **Notas importantes:**
 - Los pines utilizan resistencias pullup internas del Arduino
-- Los joysticks deben conectar el pin correspondiente a GND cuando están activos (lógica invertida)
+- Los switches deben conectar el pin correspondiente a GND cuando están activos (lógica invertida)
+- Cuando ningún switch está activo (ambos en HIGH), el estado es NEUTRAL
 - No se requieren resistencias externas
 
 #### Motores
@@ -71,11 +71,11 @@ sisifo_league/
 2. Conectar el hardware según el esquema
 3. Abrir el Monitor Serie (9600 baudios) para ver información de depuración
 4. Controlar el robot con los joysticks:
-   - **NEUTRAL**: Robot detenido (velocidad = 0)
-   - **NEUTRAL → UP**: La rueda acelera gradualmente hacia adelante
-   - **UP → NEUTRAL**: La rueda se detiene instantáneamente
-   - **NEUTRAL → DOWN**: La rueda acelera gradualmente en reversa
-   - **DOWN → NEUTRAL**: La rueda se detiene instantáneamente
+   - **NEUTRAL** (ningún switch activo): Robot detenido (velocidad = 0)
+   - **NEUTRAL → UP** (activar switch UP): La rueda acelera gradualmente hacia adelante
+   - **UP → NEUTRAL** (soltar switch UP): La rueda se detiene instantáneamente
+   - **NEUTRAL → DOWN** (activar switch DOWN): La rueda acelera gradualmente en reversa
+   - **DOWN → NEUTRAL** (soltar switch DOWN): La rueda se detiene instantáneamente
 
 ### Configuración
 
@@ -97,12 +97,13 @@ const float TIEMPO_ACELERACION = 2.0; // Tiempo en segundos para alcanzar veloci
 ### Funcionamiento
 
 El programa:
-1. Lee el estado digital de ambos joysticks (UP, DOWN o NEUTRAL)
-2. Actualiza la velocidad objetivo según el estado
-3. Aplica aceleración gradual hasta alcanzar la velocidad objetivo
-4. Detiene instantáneamente los motores al volver a NEUTRAL
-5. Controla cada motor independientemente según su joystick
-6. Envía información de depuración por puerto serie
+1. Lee el estado de los 2 switches de cada joystick (UP y DOWN)
+2. Determina el estado del joystick: UP (switch UP activo), DOWN (switch DOWN activo), o NEUTRAL (ningún switch activo)
+3. Actualiza la velocidad objetivo según el estado
+4. Aplica aceleración gradual hasta alcanzar la velocidad objetivo
+5. Detiene instantáneamente los motores al volver a NEUTRAL
+6. Controla cada motor independientemente según su joystick
+7. Envía información de depuración por puerto serie
 
 **Comportamiento detallado:**
 - Al presionar UP/DOWN desde NEUTRAL, la velocidad incrementa gradualmente
