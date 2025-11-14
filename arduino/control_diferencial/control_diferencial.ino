@@ -2,8 +2,10 @@
  * Control Diferencial Robot - Sisifo League
  * 
  * Este programa controla un robot diferencial usando dos joysticks digitales de 3 estados.
- * Cada joystick tiene tres señales digitales (UP, DOWN, NEUTRAL) que controlan una rueda.
- * Solo una señal puede estar activa a la vez por restricción de hardware.
+ * Cada joystick tiene DOS switches (UP y DOWN) que determinan 3 estados posibles:
+ * - UP activo (LOW) = estado UP
+ * - DOWN activo (LOW) = estado DOWN
+ * - Ninguno activo (ambos HIGH) = estado NEUTRAL
  * 
  * Los pines de entrada utilizan resistencias pullup internas con lógica invertida,
  * eliminando la necesidad de resistencias externas. Compatible con Arduino Uno/Nano estándar.
@@ -11,15 +13,13 @@
  * Conexiones de Hardware:
  * - Joystick Izquierdo UP: Pin 9 (señal digital para arriba)
  * - Joystick Izquierdo DOWN: Pin 10 (señal digital para abajo)
- * - Joystick Izquierdo NEUTRAL: Pin 11 (señal digital para neutral)
  * - Joystick Derecho UP: Pin 12 (señal digital para arriba)
  * - Joystick Derecho DOWN: Pin A2 (señal digital para abajo)
- * - Joystick Derecho NEUTRAL: Pin A3 (señal digital para neutral)
  * - Motor Izquierdo: Pines 5 (PWM), 4 (DIR1), 3 (DIR2)
  * - Motor Derecho: Pines 6 (PWM), 7 (DIR1), 8 (DIR2)
  * 
  * Funcionamiento:
- * - NEUTRAL: Motor detenido (velocidad = 0)
+ * - NEUTRAL (ningún switch activo): Motor detenido (velocidad = 0)
  * - NEUTRAL → UP: Velocidad aumenta gradualmente hasta el máximo
  * - UP → NEUTRAL: Motor se detiene instantáneamente
  * - NEUTRAL → DOWN: Velocidad aumenta gradualmente en reversa hasta el máximo
@@ -30,15 +30,13 @@
  */
 
 // ========== CONFIGURACIÓN DE PINES ==========
-// Pines digitales para joystick izquierdo
+// Pines digitales para joystick izquierdo (2 switches por joystick)
 const int PIN_JOY_IZQ_UP = 9;       // Señal UP izquierda
 const int PIN_JOY_IZQ_DOWN = 10;    // Señal DOWN izquierda
-const int PIN_JOY_IZQ_NEUTRAL = 11; // Señal NEUTRAL izquierda
 
-// Pines digitales para joystick derecho
+// Pines digitales para joystick derecho (2 switches por joystick)
 const int PIN_JOY_DER_UP = 12;      // Señal UP derecha
 const int PIN_JOY_DER_DOWN = A2;    // Señal DOWN derecha
-const int PIN_JOY_DER_NEUTRAL = A3; // Señal NEUTRAL derecha
 
 // Pines para motor izquierdo
 const int PIN_MOTOR_IZQ_PWM = 5;   // Control de velocidad PWM
@@ -84,12 +82,11 @@ void setup() {
   
   // Configurar pines de joysticks como entradas con resistencias pullup internas
   // La lógica está invertida: los joysticks deben conectar el pin a GND cuando activos
+  // Cuando ningún switch está activo (ambos HIGH), el estado es NEUTRAL
   pinMode(PIN_JOY_IZQ_UP, INPUT_PULLUP);
   pinMode(PIN_JOY_IZQ_DOWN, INPUT_PULLUP);
-  pinMode(PIN_JOY_IZQ_NEUTRAL, INPUT_PULLUP);
   pinMode(PIN_JOY_DER_UP, INPUT_PULLUP);
   pinMode(PIN_JOY_DER_DOWN, INPUT_PULLUP);
-  pinMode(PIN_JOY_DER_NEUTRAL, INPUT_PULLUP);
   
   // Configurar pines de motores como salidas
   pinMode(PIN_MOTOR_IZQ_PWM, OUTPUT);
@@ -129,17 +126,22 @@ void loop() {
 // ========== FUNCIONES DE LECTURA ==========
 void leerEstadosJoysticks() {
   // Leer estado del joystick izquierdo (lógica invertida: LOW = activo)
-  if (digitalRead(PIN_JOY_IZQ_UP) == LOW) {
+  // Solo 2 switches: UP y DOWN. Cuando ninguno está activo, se aplica NEUTRAL
+  bool upIzq = digitalRead(PIN_JOY_IZQ_UP) == LOW;
+  bool downIzq = digitalRead(PIN_JOY_IZQ_DOWN) == LOW;
+  
+  if (upIzq) {
     if (estadoIzq != ESTADO_UP) {
       estadoIzq = ESTADO_UP;
       velocidadObjetivoIzq = VELOCIDAD_MAXIMA;
     }
-  } else if (digitalRead(PIN_JOY_IZQ_DOWN) == LOW) {
+  } else if (downIzq) {
     if (estadoIzq != ESTADO_DOWN) {
       estadoIzq = ESTADO_DOWN;
       velocidadObjetivoIzq = -VELOCIDAD_MAXIMA;
     }
-  } else if (digitalRead(PIN_JOY_IZQ_NEUTRAL) == LOW) {
+  } else {
+    // Ningún switch activo = NEUTRAL
     if (estadoIzq != ESTADO_NEUTRAL) {
       estadoIzq = ESTADO_NEUTRAL;
       velocidadObjetivoIzq = 0;
@@ -148,17 +150,22 @@ void leerEstadosJoysticks() {
   }
   
   // Leer estado del joystick derecho (lógica invertida: LOW = activo)
-  if (digitalRead(PIN_JOY_DER_UP) == LOW) {
+  // Solo 2 switches: UP y DOWN. Cuando ninguno está activo, se aplica NEUTRAL
+  bool upDer = digitalRead(PIN_JOY_DER_UP) == LOW;
+  bool downDer = digitalRead(PIN_JOY_DER_DOWN) == LOW;
+  
+  if (upDer) {
     if (estadoDer != ESTADO_UP) {
       estadoDer = ESTADO_UP;
       velocidadObjetivoDer = VELOCIDAD_MAXIMA;
     }
-  } else if (digitalRead(PIN_JOY_DER_DOWN) == LOW) {
+  } else if (downDer) {
     if (estadoDer != ESTADO_DOWN) {
       estadoDer = ESTADO_DOWN;
       velocidadObjetivoDer = -VELOCIDAD_MAXIMA;
     }
-  } else if (digitalRead(PIN_JOY_DER_NEUTRAL) == LOW) {
+  } else {
+    // Ningún switch activo = NEUTRAL
     if (estadoDer != ESTADO_NEUTRAL) {
       estadoDer = ESTADO_NEUTRAL;
       velocidadObjetivoDer = 0;

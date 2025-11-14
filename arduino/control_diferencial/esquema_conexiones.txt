@@ -5,19 +5,17 @@
  * Arduino Uno/Nano
  * ================
  * 
- * JOYSTICKS DIGITALES (3 estados):
- * ---------------------------------
+ * JOYSTICKS DIGITALES (3 estados con 2 switches):
+ * ------------------------------------------------
  * Joystick Izquierdo:
- *   - Señal UP      → Pin 9
- *   - Señal DOWN    → Pin 10
- *   - Señal NEUTRAL → Pin 11
+ *   - Switch UP     → Pin 9
+ *   - Switch DOWN   → Pin 10
  *   - VCC           → 5V
  *   - GND           → GND
  * 
  * Joystick Derecho:
- *   - Señal UP      → Pin 12
- *   - Señal DOWN    → Pin A2
- *   - Señal NEUTRAL → Pin A3
+ *   - Switch UP     → Pin 12
+ *   - Switch DOWN   → Pin A2
  *   - VCC           → 5V
  *   - GND           → GND
  * 
@@ -52,24 +50,26 @@
  * ------------------
  * 1. Usar fuente externa para motores (6-12V)
  * 2. Conectar todos los GND juntos (común)
- * 3. Los joysticks digitales deben garantizar que solo una señal esté activa a la vez
- * 4. Configurar resistencias pull-down si los joysticks no las incluyen
- * 5. Verificar polaridad de motores para dirección correcta
- * 6. Si el robot gira al revés, intercambiar IN1-IN2 o IN3-IN4
+ * 3. Cada joystick tiene 2 switches: UP y DOWN
+ * 4. Los switches deben conectar el pin a GND cuando están activos (lógica invertida)
+ * 5. Cuando ningún switch está activo, el estado es NEUTRAL
+ * 6. Se utilizan resistencias pullup internas del Arduino (no se requieren externas)
+ * 7. Verificar polaridad de motores para dirección correcta
+ * 8. Si el robot gira al revés, intercambiar IN1-IN2 o IN3-IN4
  * 
  * DIAGRAMA ASCII:
  * ---------------
  * 
  *   [Joystick Izq]          [Joystick Der]
- *    UP  DOWN  NEU          UP  DOWN  NEU
- *     |    |    |            |    |    |
- *     9   10   11           12   A2   A3
- *     |    |    |            |    |    |
- *  +--+----+----+------------+----+----+--+
- *  |        ARDUINO UNO/NANO              |
- *  |                                      |
- *  |  Pin 3,4,5          Pin 6,7,8        |
- *  +----+---+----------------+---+--------+
+ *     UP   DOWN               UP   DOWN
+ *      |     |                 |     |
+ *      9    10                12    A2
+ *      |     |                 |     |
+ *  +---+-----+-----------------+-----+---+
+ *  |        ARDUINO UNO/NANO               |
+ *  |                                       |
+ *  |  Pin 3,4,5          Pin 6,7,8         |
+ *  +----+---+----------------+---+---------+
  *       |   |                |   |
  *   +---+---+--+         +---+---+--+
  *   |  L298N   |         |  L298N   |
@@ -78,5 +78,11 @@
  *   +----+-----+         +----+-----+
  *        |                    |
  *   [Motor Izq]          [Motor Der]
+ * 
+ * ESTADOS DEL JOYSTICK:
+ * ---------------------
+ * - UP activo (LOW), DOWN inactivo (HIGH) = Estado UP
+ * - DOWN activo (LOW), UP inactivo (HIGH) = Estado DOWN
+ * - Ambos inactivos (HIGH, HIGH) = Estado NEUTRAL
  * 
  */
