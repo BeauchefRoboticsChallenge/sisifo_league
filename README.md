@@ -30,12 +30,11 @@ sisifo_league/
 
 ### Hardware Requerido
 
-- Arduino Uno/Nano o compatible
+- Arduino Uno/Nano o compatible (preferiblemente ESP32 u otra placa con soporte INPUT_PULLDOWN)
 - 2 Joysticks digitales de 3 estados (cada uno con señales UP, DOWN, NEUTRAL)
 - 2 Motores DC con driver (ej: L298N)
 - Fuente de alimentación adecuada para los motores
 - Cables de conexión
-- Resistencias pull-down (si los joysticks no las incluyen)
 
 ### Conexiones
 

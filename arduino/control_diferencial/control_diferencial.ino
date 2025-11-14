@@ -5,6 +5,9 @@
  * Cada joystick tiene tres señales digitales (UP, DOWN, NEUTRAL) que controlan una rueda.
  * Solo una señal puede estar activa a la vez por restricción de hardware.
  * 
+ * Los pines de entrada utilizan resistencias pulldown internas, eliminando la necesidad
+ * de resistencias externas. Requiere una placa compatible con INPUT_PULLDOWN (ej: ESP32).
+ * 
  * Conexiones de Hardware:
  * - Joystick Izquierdo UP: Pin 9 (señal digital para arriba)
  * - Joystick Izquierdo DOWN: Pin 10 (señal digital para abajo)
@@ -79,13 +82,13 @@ void setup() {
   Serial.println("=== Control Diferencial Robot - 3-State Joysticks ===");
   Serial.println("Inicializando sistema...");
   
-  // Configurar pines de joysticks como entradas
-  pinMode(PIN_JOY_IZQ_UP, INPUT);
-  pinMode(PIN_JOY_IZQ_DOWN, INPUT);
-  pinMode(PIN_JOY_IZQ_NEUTRAL, INPUT);
-  pinMode(PIN_JOY_DER_UP, INPUT);
-  pinMode(PIN_JOY_DER_DOWN, INPUT);
-  pinMode(PIN_JOY_DER_NEUTRAL, INPUT);
+  // Configurar pines de joysticks como entradas con resistencias pulldown internas
+  pinMode(PIN_JOY_IZQ_UP, INPUT_PULLDOWN);
+  pinMode(PIN_JOY_IZQ_DOWN, INPUT_PULLDOWN);
+  pinMode(PIN_JOY_IZQ_NEUTRAL, INPUT_PULLDOWN);
+  pinMode(PIN_JOY_DER_UP, INPUT_PULLDOWN);
+  pinMode(PIN_JOY_DER_DOWN, INPUT_PULLDOWN);
+  pinMode(PIN_JOY_DER_NEUTRAL, INPUT_PULLDOWN);
   
   // Configurar pines de motores como salidas
   pinMode(PIN_MOTOR_IZQ_PWM, OUTPUT);
