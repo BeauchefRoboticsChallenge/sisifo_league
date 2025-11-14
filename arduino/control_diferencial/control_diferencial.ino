@@ -5,8 +5,8 @@
  * Cada joystick tiene tres señales digitales (UP, DOWN, NEUTRAL) que controlan una rueda.
  * Solo una señal puede estar activa a la vez por restricción de hardware.
  * 
- * Los pines de entrada utilizan resistencias pulldown internas, eliminando la necesidad
- * de resistencias externas. Requiere una placa compatible con INPUT_PULLDOWN (ej: ESP32).
+ * Los pines de entrada utilizan resistencias pullup internas con lógica invertida,
+ * eliminando la necesidad de resistencias externas. Compatible con Arduino Uno/Nano estándar.
  * 
  * Conexiones de Hardware:
  * - Joystick Izquierdo UP: Pin 9 (señal digital para arriba)
@@ -82,13 +82,14 @@ void setup() {
   Serial.println("=== Control Diferencial Robot - 3-State Joysticks ===");
   Serial.println("Inicializando sistema...");
   
-  // Configurar pines de joysticks como entradas con resistencias pulldown internas
-  pinMode(PIN_JOY_IZQ_UP, INPUT_PULLDOWN);
-  pinMode(PIN_JOY_IZQ_DOWN, INPUT_PULLDOWN);
-  pinMode(PIN_JOY_IZQ_NEUTRAL, INPUT_PULLDOWN);
-  pinMode(PIN_JOY_DER_UP, INPUT_PULLDOWN);
-  pinMode(PIN_JOY_DER_DOWN, INPUT_PULLDOWN);
-  pinMode(PIN_JOY_DER_NEUTRAL, INPUT_PULLDOWN);
+  // Configurar pines de joysticks como entradas con resistencias pullup internas
+  // La lógica está invertida: los joysticks deben conectar el pin a GND cuando activos
+  pinMode(PIN_JOY_IZQ_UP, INPUT_PULLUP);
+  pinMode(PIN_JOY_IZQ_DOWN, INPUT_PULLUP);
+  pinMode(PIN_JOY_IZQ_NEUTRAL, INPUT_PULLUP);
+  pinMode(PIN_JOY_DER_UP, INPUT_PULLUP);
+  pinMode(PIN_JOY_DER_DOWN, INPUT_PULLUP);
+  pinMode(PIN_JOY_DER_NEUTRAL, INPUT_PULLUP);
   
   // Configurar pines de motores como salidas
   pinMode(PIN_MOTOR_IZQ_PWM, OUTPUT);
@@ -127,18 +128,18 @@ void loop() {
 
 // ========== FUNCIONES DE LECTURA ==========
 void leerEstadosJoysticks() {
-  // Leer estado del joystick izquierdo
-  if (digitalRead(PIN_JOY_IZQ_UP) == HIGH) {
+  // Leer estado del joystick izquierdo (lógica invertida: LOW = activo)
+  if (digitalRead(PIN_JOY_IZQ_UP) == LOW) {
     if (estadoIzq != ESTADO_UP) {
       estadoIzq = ESTADO_UP;
       velocidadObjetivoIzq = VELOCIDAD_MAXIMA;
     }
-  } else if (digitalRead(PIN_JOY_IZQ_DOWN) == HIGH) {
+  } else if (digitalRead(PIN_JOY_IZQ_DOWN) == LOW) {
     if (estadoIzq != ESTADO_DOWN) {
       estadoIzq = ESTADO_DOWN;
       velocidadObjetivoIzq = -VELOCIDAD_MAXIMA;
     }
-  } else if (digitalRead(PIN_JOY_IZQ_NEUTRAL) == HIGH) {
+  } else if (digitalRead(PIN_JOY_IZQ_NEUTRAL) == LOW) {
     if (estadoIzq != ESTADO_NEUTRAL) {
       estadoIzq = ESTADO_NEUTRAL;
       velocidadObjetivoIzq = 0;
@@ -146,18 +147,18 @@ void leerEstadosJoysticks() {
     }
   }
   
-  // Leer estado del joystick derecho
-  if (digitalRead(PIN_JOY_DER_UP) == HIGH) {
+  // Leer estado del joystick derecho (lógica invertida: LOW = activo)
+  if (digitalRead(PIN_JOY_DER_UP) == LOW) {
     if (estadoDer != ESTADO_UP) {
       estadoDer = ESTADO_UP;
       velocidadObjetivoDer = VELOCIDAD_MAXIMA;
     }
-  } else if (digitalRead(PIN_JOY_DER_DOWN) == HIGH) {
+  } else if (digitalRead(PIN_JOY_DER_DOWN) == LOW) {
     if (estadoDer != ESTADO_DOWN) {
       estadoDer = ESTADO_DOWN;
       velocidadObjetivoDer = -VELOCIDAD_MAXIMA;
     }
-  } else if (digitalRead(PIN_JOY_DER_NEUTRAL) == HIGH) {
+  } else if (digitalRead(PIN_JOY_DER_NEUTRAL) == LOW) {
     if (estadoDer != ESTADO_NEUTRAL) {
       estadoDer = ESTADO_NEUTRAL;
       velocidadObjetivoDer = 0;

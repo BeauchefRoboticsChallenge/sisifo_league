@@ -30,8 +30,8 @@ sisifo_league/
 
 ### Hardware Requerido
 
-- Arduino Uno/Nano o compatible (preferiblemente ESP32 u otra placa con soporte INPUT_PULLDOWN)
-- 2 Joysticks digitales de 3 estados (cada uno con señales UP, DOWN, NEUTRAL)
+- Arduino Uno/Nano o compatible
+- 2 Joysticks digitales de 3 estados (cada uno con señales UP, DOWN, NEUTRAL que se conectan a GND cuando activos)
 - 2 Motores DC con driver (ej: L298N)
 - Fuente de alimentación adecuada para los motores
 - Cables de conexión
@@ -49,9 +49,10 @@ sisifo_league/
 - Señal DOWN: Pin A2
 - Señal NEUTRAL: Pin A3
 
-**Alimentación (ambos):**
-- VCC: 5V
-- GND: GND
+**Notas importantes:**
+- Los pines utilizan resistencias pullup internas del Arduino
+- Los joysticks deben conectar el pin correspondiente a GND cuando están activos (lógica invertida)
+- No se requieren resistencias externas
 
 #### Motores
 **Motor Izquierdo:**
