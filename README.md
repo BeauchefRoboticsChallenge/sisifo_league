@@ -45,8 +45,8 @@ sisifo_league/
 - Switch DOWN: Pin 10
 
 **Joystick Derecho (2 switches):**
-- Switch UP: Pin 12
-- Switch DOWN: Pin A2
+- Switch UP: Pin 11
+- Switch DOWN: Pin 12
 
 **Notas importantes:**
 - Los pines utilizan resistencias pullup internas del Arduino
