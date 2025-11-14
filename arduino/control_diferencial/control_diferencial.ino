@@ -35,8 +35,8 @@ const int PIN_JOY_IZQ_UP = 9;       // Señal UP izquierda
 const int PIN_JOY_IZQ_DOWN = 10;    // Señal DOWN izquierda
 
 // Pines digitales para joystick derecho (2 switches por joystick)
-const int PIN_JOY_DER_UP = 12;      // Señal UP derecha
-const int PIN_JOY_DER_DOWN = A2;    // Señal DOWN derecha
+const int PIN_JOY_DER_UP = 11;      // Señal UP derecha
+const int PIN_JOY_DER_DOWN = 12;    // Señal DOWN derecha
 
 // Pines para motor izquierdo
 const int PIN_MOTOR_IZQ_PWM = 5;   // Control de velocidad PWM

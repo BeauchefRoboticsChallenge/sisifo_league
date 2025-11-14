@@ -11,7 +11,7 @@ Si no tienes los joysticks de 3 estados, puedes probar con switches o botones:
 
 2. **Configuración de pines:**
    - Rueda Izquierda: UP(9), DOWN(10)
-   - Rueda Derecha: UP(12), DOWN(A2)
+   - Rueda Derecha: UP(11), DOWN(12)
 
 3. **IMPORTANTE:** 
    - Puedes presionar un botón a la vez, o ninguno

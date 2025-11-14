@@ -14,8 +14,8 @@
  *   - GND           → GND
  * 
  * Joystick Derecho:
- *   - Switch UP     → Pin 12
- *   - Switch DOWN   → Pin A2
+ *   - Switch UP     → Pin 11
+ *   - Switch DOWN   → Pin 12
  *   - VCC           → 5V
  *   - GND           → GND
  * 
